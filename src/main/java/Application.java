@@ -1,8 +1,19 @@
+import org.apache.flink.api.java.DataSet;
+import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import util.Utils;
+
+import java.util.ArrayList;
 
 public class Application {
     public static void main(String[] args){
-        System.out.print("The Ding goes scraaap pap pap pap kak kak - skubidabu bab and a bumm burrr BUMMM");
-        Utils.importData();
+
+        final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+
+        ArrayList<String> x = Utils.importData();
+
+        DataSet<String> text = env.fromCollection(x);
+
+        System.out.print("Finished");
     }
 }

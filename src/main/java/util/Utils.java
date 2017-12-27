@@ -9,7 +9,7 @@ public class Utils {
         ArrayList<String> data = new ArrayList<>();
         String CurrentLine = "";
 
-        try (BufferedReader br = new BufferedReader(new FileReader("src\\main\\ressources\\data"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("src" + File.separator + "main" + File.separator + "ressources" + File.separator + "data"))) {
 
             while ((CurrentLine = br.readLine()) != null) {
                 data.add(CurrentLine);
