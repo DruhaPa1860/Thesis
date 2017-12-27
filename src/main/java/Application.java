@@ -1,6 +1,5 @@
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import util.Utils;
 
 import java.util.ArrayList;
