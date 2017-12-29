@@ -18,11 +18,11 @@ public class Customer {
     private String hasStreamingTV;
     private String hasStreamingMovies;
     private String contractType;
-    private boolean hasPaperlessBilling;
+    private String hasPaperlessBilling;
     private String paymentMethod;
     private double monthlyCharges;
     private double totalCharges;
-    private boolean churn;
+    private String churn;
 
 
     public Customer(String customerID, String gender, int ceniorCitizen,
@@ -30,8 +30,8 @@ public class Customer {
                     boolean hasphoneService, String hasMultipleLines, String internetService,
                     String hasOnlineSecurity, String hasOnlineBackup, String hasDeviceProtection,
                     String hasTechSupport, String hasStreamingTV, String hasStreamingMovies,
-                    String contractType, boolean hasPaperlessBilling, String paymentMethod,
-                    double monthlyCharges, double totalCharges, boolean churn) {
+                    String contractType, String hasPaperlessBilling, String paymentMethod,
+                    double monthlyCharges, double totalCharges, String churn) {
 
         this.customerID = customerID;
         this.gender = gender;
@@ -180,11 +180,11 @@ public class Customer {
         this.contractType = contractType;
     }
 
-    public boolean isHasPaperlessBilling() {
+    public String isHasPaperlessBilling() {
         return hasPaperlessBilling;
     }
 
-    public void setHasPaperlessBilling(boolean hasPaperlessBilling) {
+    public void setHasPaperlessBilling(String hasPaperlessBilling) {
         this.hasPaperlessBilling = hasPaperlessBilling;
     }
 
@@ -212,11 +212,11 @@ public class Customer {
         this.totalCharges = totalCharges;
     }
 
-    public boolean isChurn() {
+    public String isChurn() {
         return churn;
     }
 
-    public void setChurn(boolean churn) {
+    public void setChurn(String churn) {
         this.churn = churn;
     }
 
@@ -226,21 +226,5 @@ public class Customer {
 
     public void setCustomerID(String customerID) {
         this.customerID = customerID;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Customer) {
-            Customer other = (Customer) obj;
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return 41 * super.hashCode() + Double.hashCode(45);
     }
 }

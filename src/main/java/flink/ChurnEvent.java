@@ -8,8 +8,8 @@ public class ChurnEvent extends Customer {
                       boolean hasphoneService, String hasMultipleLines, String internetService,
                       String hasOnlineSecurity, String hasOnlineBackup, String hasDeviceProtection,
                       String hasTechSupport, String hasStreamingTV, String hasStreamingMovies,
-                      String contractType, boolean hasPaperlessBilling, String paymentMethod,
-                      double monthlyCharges, double totalCharges, boolean churn) {
+                      String contractType, String hasPaperlessBilling, String paymentMethod,
+                      double monthlyCharges, double totalCharges, String churn) {
 
         super(customerID, gender, ceniorCitizen, isPartner, hasDependents,
                 tenures, hasphoneService, hasMultipleLines, internetService,

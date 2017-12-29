@@ -1,6 +1,8 @@
 package flink;
 
 import customer.Customer;
+import customer.CustomerMLFormat;
+import ml.ChurnPredictor;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 
@@ -22,16 +24,16 @@ public final class Tokenizer implements FlatMapFunction<String, Customer> {
     private String hasStreamingTV;
     private String hasStreamingMovies;
     private String contractType;
-    private boolean hasPaperlessBilling;
+    private String hasPaperlessBilling;
     private String paymentMethod;
     private double monthlyCharges;
     private double totalCharges;
-    private boolean churn;
+    private String churn;
 
     @Override
     public void flatMap(String value, Collector<Customer> out) {
         // normalize and split the line
-        String[] tokens = value.toLowerCase().split("\\R");
+        String[] tokens = value.split("\\R");
         String remainder;
 
         // emit the pairs
@@ -72,7 +74,7 @@ public final class Tokenizer implements FlatMapFunction<String, Customer> {
                     remainder = remainder.substring(remainder.indexOf(",") + 1, remainder.length());
                     contractType = remainder.substring(0, remainder.indexOf(","));
                     remainder = remainder.substring(remainder.indexOf(",") + 1, remainder.length());
-                    hasPaperlessBilling = Boolean.parseBoolean(remainder.substring(0, remainder.indexOf(",")));
+                    hasPaperlessBilling = remainder.substring(0, remainder.indexOf(","));
                     remainder = remainder.substring(remainder.indexOf(",") + 1, remainder.length());
                     paymentMethod = remainder.substring(0, remainder.indexOf(","));
                     remainder = remainder.substring(remainder.indexOf(",") + 1, remainder.length());
@@ -80,16 +82,20 @@ public final class Tokenizer implements FlatMapFunction<String, Customer> {
                     remainder = remainder.substring(remainder.indexOf(",") + 1, remainder.length());
                     totalCharges = Double.parseDouble(remainder.substring(0, remainder.indexOf(",")));
                     remainder = remainder.substring(remainder.indexOf(",") + 1, remainder.length());
-                    churn = Boolean.parseBoolean(remainder);
+                    churn = remainder;
                 } catch (NumberFormatException exception) {
                     throw new NumberFormatException("Tokenizing failed");
                 }
 
-                out.collect(new Customer(customerID, gender, ceniorCitizen, isPartner,
+                Customer currentCustomer = new Customer(customerID, gender, ceniorCitizen, isPartner,
                         hasDependents, tenures, hasphoneService, hasMultipleLines,
                         internetService, hasOnlineSecurity, hasOnlineBackup, hasDeviceProtection,
                         hasTechSupport, hasStreamingTV, hasStreamingMovies, contractType,
-                        hasPaperlessBilling, paymentMethod, monthlyCharges, totalCharges, churn));
+                        hasPaperlessBilling, paymentMethod, monthlyCharges, totalCharges, churn);
+
+                System.out.println(new ChurnPredictor().predictCustomerChurn(currentCustomer).toString());
+
+                out.collect(currentCustomer);
             }
         }
     }

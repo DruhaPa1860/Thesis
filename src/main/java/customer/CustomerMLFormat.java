@@ -1,6 +1,10 @@
 package customer;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CustomerMLFormat {
+    private String churn;
     private String gender;
     private String ceniorCitizen;
     private String isPartner;
@@ -22,7 +26,7 @@ public class CustomerMLFormat {
     private String totalCharges;
 
     public CustomerMLFormat(Customer customer) {
-        this.gender = customer.getGender();
+        this.gender = formatGender(customer.getGender());
         this.ceniorCitizen = String.valueOf(customer.getCeniorCitizen());
         this.isPartner = formatBoolean(customer.isPartner());
         this.hasDependents = formatBoolean(customer.isHasDependents());
@@ -37,10 +41,33 @@ public class CustomerMLFormat {
         this.hasStreamingTV = formatBooleanWithInternetServices(customer.isHasStreamingTV());
         this.hasStreamingMovies = formatBooleanWithInternetServices(customer.isHasStreamingMovies());
         this.contractType = formatContractType(customer.getContractType());
-        this.hasPaperlessBilling = formatBoolean(customer.isHasPaperlessBilling());
+        this.hasPaperlessBilling = formatYesNo(customer.isHasPaperlessBilling());
         this.paymentMethod = formatPaymentMethod(customer.getPaymentMethod());
         this.monthlyCharges = String.valueOf(customer.getMonthlyCharges());
         this.totalCharges = String.valueOf(customer.getTotalCharges());
+        this.churn = formatYesNo(customer.isChurn());
+    }
+
+    private String formatYesNo(String hasPaperlessBilling) {
+        switch (hasPaperlessBilling) {
+            case "Yes":
+                return "1";
+            case "No":
+                return "0";
+            default:
+                throw new IllegalArgumentException("Error Parsing hasPaperlessBilling: " + hasPaperlessBilling);
+        }
+    }
+
+    private String formatGender(String gender) {
+        switch (gender) {
+            case "Male":
+                return "1";
+            case "Female":
+                return "0";
+            default:
+                throw new IllegalArgumentException("Error Parsing gender: " + gender);
+        }
     }
 
     private String formatPaymentMethod(String paymentMethod) {
@@ -48,9 +75,9 @@ public class CustomerMLFormat {
             return "1,0,0,0";
         } else if(paymentMethod.toLowerCase().equals("mailed check")){
             return  "0,1,0,0";
-        } else if (paymentMethod.toLowerCase().equals("Bank transfer (automatic)")){
+        } else if (paymentMethod.toLowerCase().equals("bank transfer (automatic)")){
             return  "0,0,1,0";
-        }  else if (paymentMethod.toLowerCase().equals("Credit card (automatic)")){
+        }  else if (paymentMethod.toLowerCase().equals("credit card (automatic)")){
             return  "0,0,0,1";
         }else {
             throw new IllegalArgumentException("Error Parsing paymentMethod: " + paymentMethod);
@@ -121,5 +148,10 @@ public class CustomerMLFormat {
                 hasDeviceProtection + "," + hasTechSupport + "," + hasStreamingTV + "," +
                 hasStreamingMovies + "," + contractType + "," + hasPaperlessBilling + "," +
                 paymentMethod + "," + monthlyCharges + "," + totalCharges;
+    }
+
+    public List<String> getFeatureList(){
+        List<String> featureList = Arrays.asList(toString().split("\\s*,\\s*"));
+        return featureList;
     }
 }
