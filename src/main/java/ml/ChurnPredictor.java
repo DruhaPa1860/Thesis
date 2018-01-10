@@ -10,7 +10,6 @@ import hex.genmodel.easy.prediction.BinomialModelPrediction;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class ChurnPredictor {
@@ -63,18 +62,18 @@ public class ChurnPredictor {
         row.put("C32", featureList.get(31));
         row.put("C33", featureList.get(32));
 
-        BinomialModelPrediction p = null;
+        BinomialModelPrediction predictor = null;
 
         try {
-            p = model.predictBinomial(row);
+            predictor = model.predictBinomial(row);
         } catch (PredictException e) {
             System.out.println(e.toString());
         }
 
         Prediction prediction = new Prediction();
         prediction.setCustomerID(customer.getCustomerID());
-        prediction.setWillChurn(p.label);
-        prediction.setChurnProbability(p.classProbabilities[1]);
+        prediction.setWillChurn(predictor.label);
+        prediction.setChurnProbability(predictor.classProbabilities[1]);
 
         return prediction;
     }
