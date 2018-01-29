@@ -1,5 +1,8 @@
 package customer;
 
+import ml.ChurnPredictor;
+import ml.Prediction;
+
 public class Customer {
 
     private String customerID;
@@ -23,6 +26,7 @@ public class Customer {
     private double monthlyCharges;
     private double totalCharges;
     private String churn;
+    private Prediction prediction;
 
 
     public Customer(String customerID, String gender, int ceniorCitizen,
@@ -31,7 +35,7 @@ public class Customer {
                     String hasOnlineSecurity, String hasOnlineBackup, String hasDeviceProtection,
                     String hasTechSupport, String hasStreamingTV, String hasStreamingMovies,
                     String contractType, String hasPaperlessBilling, String paymentMethod,
-                    double monthlyCharges, double totalCharges, String churn) {
+                    double monthlyCharges, double totalCharges, String churn, Prediction prediction) {
 
         this.customerID = customerID;
         this.gender = gender;
@@ -59,6 +63,16 @@ public class Customer {
     public Customer() {
 
     }
+
+    public Prediction getPrediction() {
+        return prediction;
+    }
+
+    public Prediction getPrediction1() {
+        this.calculateChurnProbability();
+        return prediction;
+    }
+
 
     public String getGender() {
         return gender;
@@ -226,5 +240,37 @@ public class Customer {
 
     public void setCustomerID(String customerID) {
         this.customerID = customerID;
+    }
+
+    public Prediction calculateChurnProbability() {
+        this.prediction = ChurnPredictor.predictCustomerChurn(this);
+        return prediction;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerID='" + customerID + '\'' +
+                ", gender='" + gender + '\'' +
+                ", ceniorCitizen=" + ceniorCitizen +
+                ", isPartner=" + isPartner +
+                ", hasDependents=" + hasDependents +
+                ", tenures=" + tenures +
+                ", hasphoneService=" + hasphoneService +
+                ", hasMultipleLines='" + hasMultipleLines + '\'' +
+                ", internetService='" + internetService + '\'' +
+                ", hasOnlineSecurity='" + hasOnlineSecurity + '\'' +
+                ", hasOnlineBackup='" + hasOnlineBackup + '\'' +
+                ", hasDeviceProtection='" + hasDeviceProtection + '\'' +
+                ", hasTechSupport='" + hasTechSupport + '\'' +
+                ", hasStreamingTV='" + hasStreamingTV + '\'' +
+                ", hasStreamingMovies='" + hasStreamingMovies + '\'' +
+                ", contractType='" + contractType + '\'' +
+                ", hasPaperlessBilling='" + hasPaperlessBilling + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", monthlyCharges=" + monthlyCharges +
+                ", totalCharges=" + totalCharges +
+                ", churn='" + churn + '\'' +
+                '}';
     }
 }

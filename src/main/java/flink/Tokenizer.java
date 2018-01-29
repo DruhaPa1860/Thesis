@@ -66,7 +66,8 @@ public final class Tokenizer implements FlatMapFunction<String, Customer> {
                     throw new NumberFormatException("Tokenizing failed");
                 }
 
-                System.out.println(new ChurnPredictor().predictCustomerChurn(currentCustomer).toString());
+                //Attach ML Prediction
+                currentCustomer.calculateChurnProbability();
 
                 out.collect(currentCustomer);
             }

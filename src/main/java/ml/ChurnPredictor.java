@@ -14,13 +14,13 @@ import java.util.List;
 
 public class ChurnPredictor {
 
-    public Prediction predictCustomerChurn(Customer customer) {
+    public static Prediction predictCustomerChurn(Customer customer) {
 
         EasyPredictModelWrapper model = null;
 
         try {
             model = new EasyPredictModelWrapper(MojoModel.load("src" + File.separator + "main" +
-                    File.separator + "ressources" + File.separator + "drf_5e1882dd_1db5_4b44_beea_68cd60205fb5.zip"));
+                    File.separator + "ressources" + File.separator + "gbm_db0781a0_f9a5_4eec_8ffa_b6783174c221.zip"));
         } catch (IOException e) {
             System.out.println(e.toString());
         }
