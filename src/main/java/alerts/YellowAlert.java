@@ -34,7 +34,7 @@ public class YellowAlert {
 
     @Override
     public String toString() {
-        return "BaseAlert{" +
+        return "Yellow Alert{" +
                 "customerID= '" + customerID + '\'' +
                 ", Did churn for real: = '" + churn + '\'' +
                 ", Calculated Churn Probability: = " + churnProbability +
