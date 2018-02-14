@@ -5,28 +5,28 @@ import ml.Prediction;
 
 public class Customer {
 
-    private String customerID;
-    private String gender;
-    private int ceniorCitizen;
-    private boolean isPartner;
-    private boolean hasDependents;
-    private int tenures;
-    private boolean hasphoneService;
-    private String hasMultipleLines;
-    private String internetService;
-    private String hasOnlineSecurity;
-    private String hasOnlineBackup;
-    private String hasDeviceProtection;
-    private String hasTechSupport;
-    private String hasStreamingTV;
-    private String hasStreamingMovies;
-    private String contractType;
-    private String hasPaperlessBilling;
-    private String paymentMethod;
-    private double monthlyCharges;
-    private double totalCharges;
-    private String churn;
-    private Prediction prediction;
+    public String customerID;
+    public String gender;
+    public int ceniorCitizen;
+    public boolean isPartner;
+    public boolean hasDependents;
+    public int tenures;
+    public boolean hasphoneService;
+    public String hasMultipleLines;
+    public String internetService;
+    public String hasOnlineSecurity;
+    public String hasOnlineBackup;
+    public String hasDeviceProtection;
+    public String hasTechSupport;
+    public String hasStreamingTV;
+    public String hasStreamingMovies;
+    public String contractType;
+    public String hasPaperlessBilling;
+    public String paymentMethod;
+    public double monthlyCharges;
+    public double totalCharges;
+    public String churn;
+    public Prediction prediction;
 
 
     public Customer(String customerID, String gender, int ceniorCitizen,

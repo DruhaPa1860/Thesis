@@ -2,39 +2,14 @@ package alerts;
 
 public class RedAlert {
 
-    private String customerID;
-    private String churn;
-    private Alerts alert;
-    private double churnProbability;
-
-    public RedAlert(String customerID, String churn, Alerts alert, double churnProbability) {
-        this.customerID = customerID;
-        this.churn = churn;
-        this.alert = alert;
-        this.churnProbability = churnProbability;
-
-
-    }
-
-    public double getChurnProbability() {
-        return churnProbability;
-    }
-
-    public String getCustomerID() {
-        return customerID;
-    }
-
-    public String getChurn() {
-        return churn;
-    }
-
-    public Alerts getAlert() {
-        return alert;
-    }
+    public String customerID;
+    public String churn;
+    public Alerts alert;
+    public double churnProbability;
 
     @Override
     public String toString() {
-        return "BaseAlert{" +
+        return "Red Alert{" +
                 "customerID= '" + customerID + '\'' +
                 ", Did churn for real: = '" + churn + '\'' +
                 ", Calculated Churn Probability: = " + churnProbability +
