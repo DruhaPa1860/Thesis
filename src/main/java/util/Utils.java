@@ -28,7 +28,7 @@ public class Utils {
         ArrayList<Customer> data = new ArrayList<>();
         String CurrentLine = "";
 
-        try (BufferedReader br = new BufferedReader(new FileReader("src" + File.separator + "main" + File.separator + "ressources" + File.separator + "data"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("src" + File.separator + "main" + File.separator + "ressources" + File.separator + "dataTest"))) {
 
             while ((CurrentLine = br.readLine()) != null) {
                 Customer temp = getCustomerAsPojo(CurrentLine);

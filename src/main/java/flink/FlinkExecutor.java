@@ -34,7 +34,8 @@ public class FlinkExecutor {
         //ArrayList<String> inputData = Utils.importData();
 
 
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
 
         DataStream<Customer> upStream = env.fromCollection(inputData2)
                 .flatMap(new Tokenizer());
@@ -53,8 +54,9 @@ public class FlinkExecutor {
                 .followedBy("RED")
                 .subtype(Customer.class)
                 .where(evt -> evt.getPrediction().getChurnProbability() >= 0.8)
-                //.within(Time.milliseconds(10000))
+                .within(Time.milliseconds(10000000))
                 ;
+
 
         // Create a pattern stream from alarmPattern
         PatternStream<Customer> patternStream = CEP.pattern(upStream, alarmPattern);
@@ -63,8 +65,13 @@ public class FlinkExecutor {
         DataStream<BaseAlert> baseAlerts = patternStream.select(new PatternSelectFunction<Customer, BaseAlert>() {
             @Override
             public BaseAlert select(Map<String, Customer> pattern) throws Exception {
-                Customer base = (Customer) pattern.get("BASE");
-                return new BaseAlert(base.getCustomerID(), base.isChurn(), Alerts.BASE, base.getPrediction().getChurnProbability());
+                Customer base = pattern.get("BASE");
+                BaseAlert baseAlert = new BaseAlert();
+                baseAlert.alert = Alerts.BASE;
+                baseAlert.customerID = base.customerID;
+                baseAlert.churnProbability = base.getPrediction().getChurnProbability();
+                baseAlert.churn = base.churn;
+                return baseAlert;
             }
         });
 
@@ -72,7 +79,12 @@ public class FlinkExecutor {
             @Override
             public YellowAlert select(Map<String, Customer> pattern) throws Exception {
                 Customer yellow = pattern.get("YELLOW");
-                return new YellowAlert(yellow.getCustomerID(), yellow.isChurn(), Alerts.YELLOW, yellow.getPrediction().getChurnProbability());
+                YellowAlert yellowAlert = new YellowAlert();
+                yellowAlert.alert = Alerts.YELLOW;
+                yellowAlert.customerID = yellow.customerID;
+                yellowAlert.churnProbability = yellow.getPrediction().getChurnProbability();
+                yellowAlert.churn = yellow.churn;
+                return yellowAlert;
             }
         });
 
@@ -89,12 +101,10 @@ public class FlinkExecutor {
             }
         });
 
-        //DataStream<BaseAlert> baseAlerts1 = baseAlerts.keyBy("customerID");
+        baseAlerts.keyBy("customerID").flatMap(new DuplicateFilterBase()).print();
+        yellowAlerts.keyBy("customerID").flatMap(new DuplicateFilterYellow()).print();
+        redAlerts.keyBy("customerID").flatMap(new DuplicateFilterRed()).print();
 
-        //baseAlerts.map(v -> v.toString()).print();
-        //yellowAlerts.map(x -> x.toString()).print();
-        redAlerts.keyBy("customerID").flatMap(new DuplicateFilter()).print();
-        //upStream.print();
 
 
 
@@ -107,7 +117,7 @@ public class FlinkExecutor {
         System.out.print("FinishedX");
     }
 
-    public static class DuplicateFilter extends RichFlatMapFunction<RedAlert, RedAlert> {
+    public static class DuplicateFilterRed extends RichFlatMapFunction<RedAlert, RedAlert> {
 
         static final ValueStateDescriptor<Boolean> descriptor = new ValueStateDescriptor<>("seen", Boolean.class, false);
         private ValueState<Boolean> operatorState;
@@ -119,6 +129,47 @@ public class FlinkExecutor {
 
         @Override
         public void flatMap(RedAlert value, Collector out) throws Exception {
+            if (!operatorState.value()) {
+                // we haven't seen the element yet
+                out.collect(value);
+                // set operator state to true so that we don't emit elements with this key again
+                operatorState.update(true);
+            }
+        }
+    }
+
+    public static class DuplicateFilterYellow extends RichFlatMapFunction<YellowAlert, YellowAlert> {
+
+        static final ValueStateDescriptor<Boolean> descriptor = new ValueStateDescriptor<>("seen", Boolean.class, false);
+        private ValueState<Boolean> operatorState;
+
+        @Override
+        public void open(Configuration configuration) {
+            operatorState = this.getRuntimeContext().getState(descriptor);
+        }
+
+        @Override
+        public void flatMap(YellowAlert value, Collector out) throws Exception {
+            if (!operatorState.value()) {
+                // we haven't seen the element yet
+                out.collect(value);
+                // set operator state to true so that we don't emit elements with this key again
+                operatorState.update(true);
+            }
+        }
+    }
+    public static class DuplicateFilterBase extends RichFlatMapFunction<BaseAlert, BaseAlert> {
+
+        static final ValueStateDescriptor<Boolean> descriptor = new ValueStateDescriptor<>("seen", Boolean.class, false);
+        private ValueState<Boolean> operatorState;
+
+        @Override
+        public void open(Configuration configuration) {
+            operatorState = this.getRuntimeContext().getState(descriptor);
+        }
+
+        @Override
+        public void flatMap(BaseAlert value, Collector out) throws Exception {
             if (!operatorState.value()) {
                 // we haven't seen the element yet
                 out.collect(value);
